@@ -7,7 +7,7 @@ import com.addressBook.addressBook.model.AddressBookModel;
 
 public interface IAddressBookService {
 
-	AddressBookModel addDataDb(AddressBookDTO data);
+	AddressBookModel addDataDb(AddressBookDTO contact);
 
 	AddressBookModel getdetailById(int id);
 
@@ -17,4 +17,5 @@ public interface IAddressBookService {
 
 	AddressBookModel updateDetailById(AddressBookDTO data, int id);
 
+	List<AddressBookModel> getContactByState(String state);
 }
