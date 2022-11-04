@@ -27,35 +27,38 @@ public class AddressBookController {
 	IAddressBookService service;
 
 	@PostMapping("/add")
-	public ResponseEntity<ResponseDTO> addData(@RequestBody @Valid AddressBookDTO contact) {
-		AddressBookModel response = service.addDataDb(contact);
+	public ResponseEntity<ResponseDTO> addData(@Valid @RequestBody AddressBookDTO contact) {
+		String response = service.addDataDb(contact);
 		ResponseDTO responseDto = new ResponseDTO("Contact is added successfully", response);
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 
 	}
+	// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.2GWs2GRwcJ4zFnSZdil-OMZT8bMgYxJGKRRtO79IMC8
 
-	@GetMapping("/get/{id}")
-	public ResponseEntity<ResponseDTO> getAddressDetailDbId(@PathVariable int id) {
-		AddressBookModel response = service.getdetailById(id);
+	@GetMapping("/get/{token}")
+	public ResponseEntity<ResponseDTO> getAddressDetailDbId(@PathVariable String token) {
+		AddressBookModel response = service.getdetailById(token);
 		ResponseDTO responseDto = new ResponseDTO("Id is found", response);
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-	@GetMapping("/getAll")
-	public List<AddressBookModel> getAllDetails() {
+	@GetMapping("/allDetails")
+	public ResponseEntity<ResponseDTO> getAll() {
 		List<AddressBookModel> response = service.getDbDetail();
-		return response;
-
+		ResponseDTO responseDTO = new ResponseDTO("All User details found!", response);
+		return new ResponseEntity(responseDTO, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete/{id}")
-	public void deleteById(@PathVariable int id) {
-		service.deletedetailsById(id);
+	@DeleteMapping("/delete/{token}")
+	public ResponseEntity<ResponseDTO> deleteUserById(@PathVariable String token) {
+		Integer response = service.deletedetailsById(token);
+		ResponseDTO responseDTO = new ResponseDTO("User details is deleted!", response);
+		return new ResponseEntity<>(responseDTO, HttpStatus.GONE);
 	}
 
 	@PutMapping("/update/{id}")
-	public ResponseEntity<ResponseDTO> updateById(@RequestBody @Valid AddressBookDTO data, @PathVariable int id) {
-		AddressBookModel response = service.updateDetailById(data, id);
+	public ResponseEntity<ResponseDTO> updateById(@Valid @RequestBody AddressBookDTO data, @PathVariable String token) {
+		AddressBookModel response = service.updateDetailById(data, token);
 		ResponseDTO responseDto = new ResponseDTO("successfully updated", response);
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
@@ -63,7 +66,7 @@ public class AddressBookController {
 	@GetMapping("/state/{state}")
 	public ResponseEntity<AddressBookDTO> getContactDetailDbState(@PathVariable String state) {
 		List<AddressBookModel> res = service.getContactByState(state);
-		ResponseDTO responsedto = new ResponseDTO("Get call by state is successfull", "res");
+		ResponseDTO responsedto = new ResponseDTO("Get call by state is successfull", res);
 		return new ResponseEntity(responsedto, HttpStatus.OK);
 	}
 }

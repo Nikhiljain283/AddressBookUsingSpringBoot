@@ -9,20 +9,26 @@ import com.addressBook.addressBook.DTO.AddressBookDTO;
 import com.addressBook.addressBook.exception.CustomException;
 import com.addressBook.addressBook.model.AddressBookModel;
 import com.addressBook.addressBook.repository.AddressBookRepository;
+import com.addressBook.addressBook.token.TokenUtil;
 
 @Service
 public class AddressBookService implements IAddressBookService {
 
 	@Autowired
 	AddressBookRepository repo;
+	
+	@Autowired 
+	TokenUtil tokenUtil;
 
-	public AddressBookModel addDataDb(AddressBookDTO contact) {
+	public String addDataDb(AddressBookDTO contact) {
 		AddressBookModel response = new AddressBookModel(contact);
 		repo.save(response);
-		return response;
+		String token = tokenUtil.createToken(response.getId());
+		return token;
 	}
 
-	public AddressBookModel getdetailById(int id) {
+	public AddressBookModel getdetailById(String token) {
+		int id = tokenUtil.decodeToken(token);
 		if (repo.findById(id).isPresent()) {
 			return repo.findById(id).get();
 		} else {
@@ -39,12 +45,19 @@ public class AddressBookService implements IAddressBookService {
 
 	}
 
-	public void deletedetailsById(int id) {
+	public Integer deletedetailsById(String token) {
+		int id = tokenUtil.decodeToken(token);
+		if (repo.findById(id).isPresent()) {
 		repo.deleteById(id);
+		return id;
+		}else {
+			throw new CustomException("Contact with "+id+" id is not found");
+		}
 
 	}
 
-	public AddressBookModel updateDetailById(AddressBookDTO model, int id) {
+	public AddressBookModel updateDetailById(AddressBookDTO model, String token) {
+		int id = tokenUtil.decodeToken(token);
 		if (repo.findById(id).isPresent()) {
 			AddressBookModel existingData = repo.findById(id).get();
 			existingData.setFullName(model.getFullName());

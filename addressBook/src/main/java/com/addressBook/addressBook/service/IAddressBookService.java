@@ -7,15 +7,15 @@ import com.addressBook.addressBook.model.AddressBookModel;
 
 public interface IAddressBookService {
 
-	AddressBookModel addDataDb(AddressBookDTO contact);
+	String addDataDb(AddressBookDTO contact);
 
-	AddressBookModel getdetailById(int id);
+	AddressBookModel getdetailById(String token);
 
 	List<AddressBookModel> getDbDetail();
 
-	void deletedetailsById(int id);
+	Integer deletedetailsById(String token);
 
-	AddressBookModel updateDetailById(AddressBookDTO data, int id);
+	AddressBookModel updateDetailById(AddressBookDTO data, String token);
 
 	List<AddressBookModel> getContactByState(String state);
 }
