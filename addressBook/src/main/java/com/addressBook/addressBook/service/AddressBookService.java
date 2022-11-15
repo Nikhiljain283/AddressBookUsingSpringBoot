@@ -9,7 +9,8 @@ import com.addressBook.addressBook.DTO.AddressBookDTO;
 import com.addressBook.addressBook.exception.CustomException;
 import com.addressBook.addressBook.model.AddressBookModel;
 import com.addressBook.addressBook.repository.AddressBookRepository;
-import com.addressBook.addressBook.token.TokenUtil;
+import com.addressBook.addressBook.util.EmailSenderService;
+import com.addressBook.addressBook.util.TokenUtil;
 
 @Service
 public class AddressBookService implements IAddressBookService {
@@ -19,12 +20,18 @@ public class AddressBookService implements IAddressBookService {
 	
 	@Autowired 
 	TokenUtil tokenUtil;
+	
+	@Autowired
+	EmailSenderService emailSenderService;
 
 	public String addDataDb(AddressBookDTO contact) {
 		AddressBookModel response = new AddressBookModel(contact);
 		repo.save(response);
 		String token = tokenUtil.createToken(response.getId());
+		emailSenderService.sendEmail(response.getEmail(), "checking email sender",
+				"hii "+response.getFullName()+" localhost:8080/allDetails/{"+token+"}"); 
 		return token;
+	
 	}
 
 	public AddressBookModel getdetailById(String token) {
@@ -36,11 +43,12 @@ public class AddressBookService implements IAddressBookService {
 		}
 	}
 
-	public List<AddressBookModel> getDbDetail() {
-		if (!repo.findAll().isEmpty()) {
+	public List<AddressBookModel> getDbDetail(String token) {
+		int id = tokenUtil.decodeToken(token);
+		if (repo.findById(id).isPresent()) {
 			return repo.findAll();
 		} else {
-			throw new CustomException("Table is empty");
+			throw new CustomException("Id is not present in table");
 		}
 
 	}

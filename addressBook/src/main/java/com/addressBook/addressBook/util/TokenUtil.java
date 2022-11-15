@@ -1,4 +1,4 @@
-package com.addressBook.addressBook.token;
+package com.addressBook.addressBook.util;
 
 import org.springframework.stereotype.Component;
 

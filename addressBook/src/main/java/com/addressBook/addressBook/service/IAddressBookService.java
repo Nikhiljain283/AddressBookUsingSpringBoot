@@ -11,7 +11,7 @@ public interface IAddressBookService {
 
 	AddressBookModel getdetailById(String token);
 
-	List<AddressBookModel> getDbDetail();
+	List<AddressBookModel> getDbDetail(String token);
 
 	Integer deletedetailsById(String token);
 

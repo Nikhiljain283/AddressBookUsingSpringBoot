@@ -42,9 +42,9 @@ public class AddressBookController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
-	@GetMapping("/allDetails")
-	public ResponseEntity<ResponseDTO> getAll() {
-		List<AddressBookModel> response = service.getDbDetail();
+	@GetMapping("/allDetails/{token}")
+	public ResponseEntity<ResponseDTO> getAll(@PathVariable String token) {
+		List<AddressBookModel> response = service.getDbDetail(token);
 		ResponseDTO responseDTO = new ResponseDTO("All User details found!", response);
 		return new ResponseEntity(responseDTO, HttpStatus.OK);
 	}
@@ -52,7 +52,7 @@ public class AddressBookController {
 	@DeleteMapping("/delete/{token}")
 	public ResponseEntity<ResponseDTO> deleteUserById(@PathVariable String token) {
 		Integer response = service.deletedetailsById(token);
-		ResponseDTO responseDTO = new ResponseDTO("User details is deleted!", response);
+		ResponseDTO responseDTO = new ResponseDTO("User details is deleted!", "Deleted id : "+response);
 		return new ResponseEntity<>(responseDTO, HttpStatus.GONE);
 	}
 
